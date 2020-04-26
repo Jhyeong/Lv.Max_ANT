@@ -1,0 +1,8 @@
+.StockListRow p {
+    font-size: 1.2rem;
+    color: #868e96;
+}
+
+.StockListRow p b {
+    color: #212529;
+}
