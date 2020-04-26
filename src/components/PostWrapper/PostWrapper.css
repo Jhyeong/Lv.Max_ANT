@@ -1,6 +1,8 @@
 .PostWrapper {
     width: 50rem;
     margin: 0 auto;
+    position: absolute;
+    left: 240px;
 }
 
 @media (max-width: 768px) {

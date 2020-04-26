@@ -1,0 +1,6 @@
+.SideMenu{
+    position: fixed;
+    width: 240px;
+    height: 100%;
+    top: 0px;
+}

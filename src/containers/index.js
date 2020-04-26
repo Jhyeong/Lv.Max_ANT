@@ -1,5 +1,5 @@
-import PostContainer from './PostContainer/PostContainer';
+import ContentContainer from './ContentContainer/ContentContainer';
 
 export{
-    PostContainer
+    ContentContainer
 };

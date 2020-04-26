@@ -5,6 +5,7 @@ import './StockList.css';
 const StockList = ({resultDataList}) => {
     let dataList;
     
+    /** 조회된 데이터 리스트를 이용해 row 생성*/
     if(resultDataList){
         dataList = resultDataList.map((data, index) => (
             <StockListRow 

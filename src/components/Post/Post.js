@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './Post.css';
 import { StockList } from '../';
 
-const Post = ({resultDataList}) => (
+
+const Post = ({resultDataList, title}) =>(
     <div className="Post">
-        <h1>조건검색 조회</h1>
-        <p>
-            
-        </p>
+        <h1>{title}</h1>
         <StockList resultDataList={resultDataList}/>
     </div>
-);
+)
 
 export default Post;

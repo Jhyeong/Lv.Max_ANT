@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { Header } from './components';
-import { PostContainer } from './containers';
+import { Header, SideMenu } from './components';
+import { ContentContainer } from './containers';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 class App extends Component{
   render(){
     return (
       <div>
-        <Header></Header>
-        <PostContainer></PostContainer>
+        <Router>
+          <Header></Header>
+          <SideMenu></SideMenu>
+          <ContentContainer></ContentContainer>
+        </Router>
       </div>
     );
   }

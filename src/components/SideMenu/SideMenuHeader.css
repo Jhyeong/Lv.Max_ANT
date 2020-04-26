@@ -1,0 +1,25 @@
+.SideMenuHeader{
+    background-color: rgb(255, 240, 109);
+    width: 100%;
+    height: 150px;
+    position: relative;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+}
+
+.LogoDiv{
+    width: 130px;
+    height: 130px;
+    /* border-radius: 70%; */
+    overflow: hidden;
+    position: relative;
+    top: 10%;
+    left: 20%;
+    padding-top: 15px;
+}
+
+.LogoImg{
+    width: 100%;
+    height: 100%;
+}

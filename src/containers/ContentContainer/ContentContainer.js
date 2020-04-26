@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import {PostWrapper, Navigate, Post} from '../../components';
+import {PostWrapper, Post} from '../../components';
 import * as service from '../../services/stock';
+import { Link, Route, BrowserRouter as Router } from 'react-router-dom';
 
-class PostContainer extends Component{
+class ContentContainer extends Component{
 
     constructor(props){
         super();
         this.state = {
-            fetching : true, //요청 중
             dataList : []
         }
     }
@@ -17,34 +17,26 @@ class PostContainer extends Component{
     }
 
     getSearchedStockItems = async () => {
-        this.setState({
-            fetching :true
-        });
-
         const result = await Promise.all([
             service.getSearchedStockItems()
         ]);
         
         this.setState({
-            fetching : false, //요청 완료
             resultDataList : result[0].data
         });
     };
 
     render(){
-        const {fetching, resultDataList} = this.state;
+        const resultDataList = this.state.resultDataList;
 
         return (
             <PostWrapper>
-                <Navigate 
-                    disabled={fetching}
-                />
-                <Post
-                    resultDataList = {resultDataList}
-                />
+                <Route exact path="/"/>
+                <Route exact path="/searchedstockitems" render={()=> <Post resultDataList = {resultDataList} title="조건검색 조회"/>}/>
+                <Route exact path="/checkbalance"       render={()=> <Post resultDataList = {resultDataList} title="정산결과 조회"/>}/>
             </PostWrapper>
         );
     }
 }
 
-export default PostContainer;
+export default ContentContainer;
