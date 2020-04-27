@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b7162c21.chunk.css",
+    "main.js": "/static/js/main.c6f1a8e1.chunk.js",
+    "main.js.map": "/static/js/main.c6f1a8e1.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.1f6efacb.js",
+    "runtime-main.js.map": "/static/js/runtime-main.1f6efacb.js.map",
+    "static/css/2.bac917d6.chunk.css": "/static/css/2.bac917d6.chunk.css",
+    "static/js/2.79174797.chunk.js": "/static/js/2.79174797.chunk.js",
+    "static/js/2.79174797.chunk.js.map": "/static/js/2.79174797.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.192cab35766d483f2179eb2ca05c0950.js": "/precache-manifest.192cab35766d483f2179eb2ca05c0950.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.bac917d6.chunk.css.map": "/static/css/2.bac917d6.chunk.css.map",
+    "static/css/main.b7162c21.chunk.css.map": "/static/css/main.b7162c21.chunk.css.map",
+    "static/js/2.79174797.chunk.js.LICENSE.txt": "/static/js/2.79174797.chunk.js.LICENSE.txt",
+    "static/media/LvMaxANT.jpg": "/static/media/LvMaxANT.468143bd.jpg",
+    "static/media/semantic.min.css": "/static/media/outline-icons.ef60a4f6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1f6efacb.js",
+    "static/css/2.bac917d6.chunk.css",
+    "static/js/2.79174797.chunk.js",
+    "static/css/main.b7162c21.chunk.css",
+    "static/js/main.c6f1a8e1.chunk.js"
+  ]
+}
