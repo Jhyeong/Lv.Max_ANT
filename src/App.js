@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Header, SideMenu } from './components';
-import { ContentContainer } from './containers';
+import { Header, SideMenu, ContentWrapper } from './components';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 class App extends Component{
@@ -8,9 +7,9 @@ class App extends Component{
     return (
       <div>
         <Router>
-          <Header></Header>
+          {/* <Header></Header> */}
           <SideMenu></SideMenu>
-          <ContentContainer></ContentContainer>
+          <ContentWrapper></ContentWrapper>
         </Router>
       </div>
     );

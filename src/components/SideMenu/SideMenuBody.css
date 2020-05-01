@@ -5,10 +5,26 @@
 }
 
 .ItemWrapper{
-    width: 100% !important;
-    text-align: center;
+    width: 100%;
 }
 
 .item{
-    font-weight: bold !important;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    color: darkgray;
+}
+
+.item:hover{
+    color: #009efb;
+}
+
+.active{
+    color: #009efb;
+    background-color: #f2f7f8;
+    border-left: 3px solid #009efb;
+    border-radius: 0%;
+    font-weight: 700;
+    vertical-align: middle;
+    margin: 0 auto;
 }

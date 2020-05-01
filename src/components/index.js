@@ -1,17 +1,13 @@
 import Header from './Header/Header';
 import SideMenu from './SideMenu/SideMenu';
-import PostWrapper from './PostWrapper/PostWrapper';
-import Navigate from './Navigate/Navigate';
-import Post from './Post/Post';
-import StockList from './StockList/StockList';
-import StockListRow from './StockListRow/StockListRow';
+import ContentWrapper from './ContentWrapper/ContentWrapper';
+import Content from './Content/Content';
+import ContentTable from './ContentTable/ContentTable';
 
 export{
     Header,
     SideMenu,
-    PostWrapper,
-    Navigate,
-    Post,
-    StockList,
-    StockListRow
+    ContentWrapper,
+    Content,
+    ContentTable
 };

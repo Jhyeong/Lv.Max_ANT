@@ -1,0 +1,20 @@
+thead{
+    background-color: #CEEDFF;
+}
+
+th{
+    font-family: "NotoB" !important;
+    text-align: center !important;
+}
+
+td{
+    text-align: center !important;
+}
+
+.plus{
+    color: red !important;
+}
+
+.minus{
+    color: blue !important;
+}

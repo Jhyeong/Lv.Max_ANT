@@ -22,20 +22,28 @@ class SideMenuBody extends Component{
     render(){
         return (
             <div className="SideMenuBody">
-                <div className="ItemWrapper ui secondary vertical menu">
-                    <Link to="/searchedstockitems">
+                <div className="">
+                    <Link to="/searched-stock-items">
                         <div className={this.state.selectedId == 1? "active item" : "item"}
                             id="1"
                             onClick={this.handleItemClick}
                         >조건검색 조회
                         </div>
                     </Link>
-                    <Link to="/checkbalance">
+                    <Link to="/trade-result-summary">
                         <div className={this.state.selectedId == 2? "active item" : "item"}
                             id="2"
                             onClick={this.handleItemClick}
                         >
-                        정산결과 조회
+                        체결결과 요약
+                        </div>
+                    </Link>
+                    <Link to="/trade-result-detail">
+                        <div className={this.state.selectedId == 3? "active item" : "item"}
+                            id="3"
+                            onClick={this.handleItemClick}
+                        >
+                        체결결과 상세
                         </div>
                     </Link>
                 </div>

@@ -1,0 +1,27 @@
+.ContentHeader{
+    height: 120px;
+    background-color: white;
+    font-size: 40px;
+    font-family: "NotoB";
+}
+
+.ContentBody > div{
+    height: 550px;
+    margin-top: 10px;
+}
+
+.dash{
+    display: inline-block;
+    padding: 15px;
+    font-family: "NotoR";
+}
+
+.SearchBtn{
+    display: inline-block;
+}
+
+.SearchBtn{
+    font-family: "NotoB" !important;
+    margin-left: 15px !important;
+    margin-bottom: 10px !important;
+}
