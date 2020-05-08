@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './SideMenuBody.css';
-import { Link, Route, BrowserRouter as Router } from 'react-router-dom';
+import SideMenuRow from './SideMenuRow';
+
 
 class SideMenuBody extends Component{
 
@@ -8,7 +9,7 @@ class SideMenuBody extends Component{
         super(props);
         this.handleItemClick = this.handleItemClick.bind(this);
         this.state = {
-            selectedId : 1
+            selectedId : 0
         }
     }
 
@@ -22,31 +23,10 @@ class SideMenuBody extends Component{
     render(){
         return (
             <div className="SideMenuBody">
-                <div className="">
-                    <Link to="/searched-stock-items">
-                        <div className={this.state.selectedId == 1? "active item" : "item"}
-                            id="1"
-                            onClick={this.handleItemClick}
-                        >조건검색 조회
-                        </div>
-                    </Link>
-                    <Link to="/trade-result-summary">
-                        <div className={this.state.selectedId == 2? "active item" : "item"}
-                            id="2"
-                            onClick={this.handleItemClick}
-                        >
-                        체결결과 요약
-                        </div>
-                    </Link>
-                    <Link to="/trade-result-detail">
-                        <div className={this.state.selectedId == 3? "active item" : "item"}
-                            id="3"
-                            onClick={this.handleItemClick}
-                        >
-                        체결결과 상세
-                        </div>
-                    </Link>
-                </div>
+                <SideMenuRow path="/searched-stock-items"   id="0" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/trade-result-summary"   id="1" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/trade-result-detail"    id="2" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/common-code"            id="3" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
             </div>
         );
     }

@@ -18,3 +18,11 @@ td{
 .minus{
     color: blue !important;
 }
+
+a{
+    text-decoration: none !important;
+}
+
+caption{
+    text-align: right !important;
+}

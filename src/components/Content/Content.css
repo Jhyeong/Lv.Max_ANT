@@ -25,3 +25,11 @@
     margin-left: 15px !important;
     margin-bottom: 10px !important;
 }
+
+.isSearch, .isEditable{
+    display: block;
+}
+
+.isNotSearch, .isNotEditable{
+    display: none;
+}

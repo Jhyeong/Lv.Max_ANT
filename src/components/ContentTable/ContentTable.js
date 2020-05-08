@@ -6,9 +6,17 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { makeStyles } from "@material-ui/core/styles";
 import './ContentTable.css';
 import NumberFormat from 'react-number-format';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import TextField from '@material-ui/core/TextField';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import Button from '@material-ui/core/Button';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import * as service from '../../services/RESTAPI';
 
 class ContentTable extends Component{
 
@@ -18,21 +26,133 @@ class ContentTable extends Component{
       headers : {
         "/searched-stock-items" : ["종목코드", "종목명", "검색일", "현재가", "전일대비", "등락률"],
         "/trade-result-detail"  : ["종목코드", "종목명", "체결일자", "주문구분", "체결수량", "체결단가"],
-        "/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"]
+        "/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"],
+        "/common-code"          : ["EDIT", "NO", "영문코드명", "한글코드명", "코드 값", "설명"]
       },
       columns : {
         "/searched-stock-items"  : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "CURRENT_PRICE", "COMPARE_YSTDAY", "PERCENT"],
         "/trade-result-summary"  : ["SEARCH_DATE", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_PERCENT", "TOTAL_DEPOSIT"],
-        "/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"]
+        "/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"],
+        "/common-code"           : ["EDIT", "NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"]
       },
       columnType : {
         "number"  : ["CURRENT_PRICE", "COMPARE_YSTDAY", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_DEPOSIT", "TRADE_PRICE"],
-        "percent" : ["PERCENT", "TOTAL_PERCENT"]
-      }
+        "percent" : ["PERCENT", "TOTAL_PERCENT"],
+        "naverLink" : ["STOCK_CODE"]
+      },
+      editMode : false,
+      insertMode : false,
+      deleteMode : false,
+      selectedEditRowIdx : ""
+    }
+
+    //수정한 데이터를 저장할 json객체
+    this.currentEditData = {};
+    this.currentInsertData = {};
+  }
+
+  //저장 버튼 클릭
+  onClickSave(data){
+    this.callRestAPI(this.currentEditData);
+    this.setState({
+      editMode : false
+    });
+  }
+
+  //취소 버튼 클릭
+  onClickCancel(e){
+    if(this.state.editMode == true){
+      this.setState({
+        editMode : false,
+        selectedEditRowIdx : ""
+      });
+    }
+    if(this.state.insertMode == true){
+      this.setState({
+        insertMode : false
+      });
     }
   }
+
+  //수정 버튼 클릭
+  onClickEdit(data, e){
+    if(!this.state.editMode){
+      this.currentEditData = data;
+      
+      this.setState({
+        editMode : true,
+        selectedEditRowIdx : e.currentTarget.id
+      });
+    }
+  }
+
+  //삭제 버튼 클릭
+  onClickDelete(data, e){
+    if(window.confirm("선택한 데이터를 삭제하시겠습니까?")){
+      this.setState({
+        deleteMode : true
+      });
+  
+      this.props.deleteHandler(data, e);
+    }
+  }
+
+  // 추가 버튼 클릭
+  onClickInsert(e){
+    this.setState({
+      insertMode : true
+    });
+  }
+
+  //추가 저장시 호출
+  onClickInsertSave(e){
+    this.props.insertHandler(this.currentInsertData, e);
+    
+    this.setState({
+      insertMode : false
+    });
+  }
+
+  //텍스트 필드 수정 시 호출
+  onEditChangeHandler(e){
+    const fieldName = e.target.name;
+    this.currentEditData[fieldName] = e.target.value;
+  }
+  
+  //텍스트 필드 추가 시 호출
+  onInsertChangeHandler(e){
+    const fieldName = e.target.name;
+    this.currentInsertData[fieldName] = e.target.value;
+  }
+
+  // REST API 호출
+  callRestAPI = async (param) => {
+    const path = window.location.pathname;
+    let result = [];
+    switch(path){
+        case "/searched-stock-items":
+            result = await service.getSearchedStockItems(param);
+            break;
+        case "/trade-result-summary" :
+            result = await service.getTradeResultSummary(param);
+            break;
+        case "/trade-result-detail" :
+            result = await service.getTradeResultDetail(param);
+            break;
+        case "/common-code" :
+            result = await service.updateCommonCode(param);
+            break;    
+        default :
+            break;
+    }
+    
+    this.setState({
+        data : result.data
+    });
+};
   
   render(){
+    // 데이터가 없는 경우
       if(typeof this.props.rowData == "undefined" || this.props.rowData.length == 0){
         return(
           <TableContainer component={Paper} className="ContentTableContainer">
@@ -52,9 +172,34 @@ class ContentTable extends Component{
             </TableContainer>
         );
       }else{
+        // 데이터가 존재하는 경우
         return(
               <TableContainer component={Paper}>
                 <Table className="ContentTable" aria-label="simple table">
+                  <caption>
+                    {!this.state.insertMode?
+                    <Button
+                            variant="contained"
+                            color="secondary"
+                            className={"editBtn"}
+                            startIcon={<AddCircleIcon></AddCircleIcon>}
+                            onClick = {this.onClickInsert.bind(this)}
+                        >
+                            추가
+                    </Button>
+                    :
+                    <Button
+                            variant="contained"
+                            color="secondary"
+                            className={"editBtn"}
+                            startIcon={<SaveIcon></SaveIcon>}
+                            onClick = {this.onClickInsertSave.bind(this)}
+                        >
+                            저장
+                    </Button>
+                    }
+                  </caption>
+                  {/* 테이블 헤더 */}
                   <TableHead>
                     <TableRow>
                       {this.state.headers[window.location.pathname].map((data) => {
@@ -62,29 +207,106 @@ class ContentTable extends Component{
                       })}
                     </TableRow>
                   </TableHead>
+                  {/* 테이블 바디 */}
                   <TableBody>
-                      {this.props.rowData.map((data) => {
+                      {this.props.rowData.map((data, rowIdx) => {
                         return (
                           <TableRow>
                             {this.state.columns[window.location.pathname].map((column, idx) => {
-                              let classValue = "";
-                              
-                              if(this.state.columnType["number"].indexOf(column) > -1 ){
-                                return <TableCell className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'원'} /></TableCell>
-                              }else if(this.state.columnType["percent"].indexOf(column) > -1 ){
-                                if(parseInt(data[column]) >= 0){
-                                  classValue = "plus"; 
+                              //수정 버튼 필드 추가
+                              if(this.props.isEditable && column == "EDIT"){
+                                if(this.state.editMode == true && rowIdx == this.state.selectedEditRowIdx){
+                                  return (
+                                    <TableCell>
+                                      <IconButton color="secondary" id={rowIdx} name={"save"+rowIdx} onClick={() => this.onClickSave(data)}>
+                                        {/* 저장 */}
+                                        <SaveIcon/>
+                                      </IconButton>
+                                      <IconButton color="secondary" id={rowIdx} name={"cancel"+rowIdx} onClick={this.onClickCancel.bind(this)}>
+                                        {/* 취소 */}
+                                        <CancelIcon/>
+                                      </IconButton>
+                                    </TableCell>
+                                  )
                                 }else{
-                                  classValue = "minus";
+                                  return (
+                                    <TableCell>
+                                      <IconButton color="secondary" id={rowIdx} name={"edit"+rowIdx} onClick={this.onClickEdit.bind(this, data)}>
+                                        {/* 수정 */}
+                                        <EditIcon/>
+                                      </IconButton>
+                                      <IconButton color="secondary" id={rowIdx} name={"delete"+rowIdx} onClick={this.onClickDelete.bind(this, data)}>
+                                        {/* 삭제 */}
+                                        <DeleteForeverIcon/>
+                                      </IconButton>
+                                    </TableCell>
+                                  )
                                 }
-                                return <TableCell className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'%'} /></TableCell>
+                              ;}
+                                
+                              //수정 모드일 때 TEXT FIELD 출력
+                              if(this.state.editMode == true && rowIdx == this.state.selectedEditRowIdx){
+                                // NO컬럼은 disabled
+                                if(column == "NO"){
+                                  return (<TableCell>
+                                            <TextField disabled id="standard-secondary" label={column} color="secondary" defaultValue={data[column]}/>
+                                        </TableCell>)
+                                }else{
+                                  return (<TableCell>
+                                            <TextField id="standard-secondary" name={column} label={column} color="secondary" defaultValue={data[column]} onChange={this.onEditChangeHandler.bind(this)}/>
+                                          </TableCell>)
+                                }
                               }else{
-                                return <TableCell className={classValue}>{data[column]}</TableCell>
+                                //수정 모드가 아닐 때 일반 FIELD 출력
+                                // 숫자 포맷
+                                if(this.state.columnType["number"].indexOf(column) > -1 ){
+                                  return <TableCell><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'원'} /></TableCell>
+                                }else if(this.state.columnType["percent"].indexOf(column) > -1 ){
+                                  let classValue = "";
+                                  // 퍼센트 포맷
+                                  // 양수는 빨간색, 음수는 파란색
+                                  if(parseInt(data[column]) >= 0){
+                                    classValue = "plus"; 
+                                  }else{
+                                    classValue = "minus";
+                                  }
+                                  return <TableCell className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'%'} /></TableCell>
+                                }else if(this.state.columnType["naverLink"].indexOf(column) > -1 ){
+                                  // 네이버 링크
+                                  return <TableCell><a href={"https://finance.naver.com/item/main.nhn?code=" + data[column]} target="_blank">{data[column]}</a></TableCell>
+                                }else{
+                                  //그 외 일반 필드
+                                  return <TableCell>{data[column]}</TableCell>
+                                }
                               }
                             })}
                           </TableRow>
                         )
                       })}
+                      {/* 추가 */}
+                      <TableRow>
+                        {this.state.insertMode?
+                        this.state.columns[window.location.pathname].map((column, idx) => {
+                          if(column == "EDIT"){
+                            return (
+                              // 취소 버튼
+                              <TableCell>
+                                <IconButton color="secondary" id={idx} name={"cancel"+idx} onClick={this.onClickCancel.bind(this)}>
+                                  <CancelIcon/>
+                                </IconButton>
+                              </TableCell>
+                              );
+                          }else{
+                            return (
+                              // 추가 버튼
+                              <TableCell>
+                                <TextField id="standard-secondary" name={column} label={column} color="secondary" onChange={this.onInsertChangeHandler.bind(this)}/>
+                              </TableCell>
+                            );
+                          }
+                        })
+                        :null}
+                      </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>

@@ -15,32 +15,38 @@ class Content extends Component{
     constructor(props){
         super(props);
         const dateUtil = new DateFnsUtils();
-
+        
         this.state = {
             data : [],
-            startDate : dateUtil.format(new Date(), "yyyy-MM-dd"),
+            startDate : dateUtil.format(dateUtil.addDays(new Date(), -7), "yyyy-MM-dd"),
             endDate : dateUtil.format(new Date(), "yyyy-MM-dd")
         }
+
+        // 초기 조회
+        this.initData();
     }
+
     // 조회 시작일
-    handleStartDateChange = function(date){
+    handleStartDateChange(date){
         this.setState({
             startDate : date
         });
     }
+
     // 조회 종료일
-    handleEndDateChange = function(date){
+    handleEndDateChange(date){
         this.setState({
             endDate : date
         });
     }
-    // 조회 버튼 클릭
-    onClickSearch = function(e){
-        this.callRestAPI();
-    }  
 
+    // 조회 버튼 클릭
+    onClickSearch(e){
+        this.initData();
+    }
+    
     // REST API 호출
-    callRestAPI = async () => {
+    initData = async () => {
         const path = window.location.pathname;
         const param = {
             startDate : this.state.startDate,
@@ -57,6 +63,9 @@ class Content extends Component{
             case "/trade-result-detail" :
                 result = await service.getTradeResultDetail(param);
                 break;
+            case "/common-code" :
+                result = await service.getCommonCode(param);
+                break;    
             default :
                 break;
         }
@@ -65,9 +74,50 @@ class Content extends Component{
             data : result.data
         });
     };
+    
+    // 추가버튼 클릭 시 호출
+    async insertHandler(data, e){
+        let response;
+        const path = window.location.pathname;
+        switch(path){
+            case "/common-code" :
+                response = await service.insertCommonCode(data);
+                break;    
+            default :
+                break;
+        }
+
+        if(response.data == 0){
+            alert("추가 중 에러가 발생했습니다.");
+        }else{
+            alert("추가가 완료되었습니다.");
+        }
+
+        this.initData();
+    }
+
+    // 삭제버튼 클릭 시 호출
+    async deleteHandler(data, e){
+        let response;
+        const currentMenu = window.location.pathname;
+        switch(currentMenu){
+            case "/common-code" : 
+                response = await service.deleteCommonCode(data);
+                break;
+            default :
+                break;
+        }
+
+        if(response.data == 0){
+            alert("삭제 중 에러가 발생했습니다.");
+        }else{
+            alert("삭제가 완료되었습니다.");
+        }
+
+        this.initData();
+    }
 
     render(){
-
         return (
             <div className="Content">
                 <div className="ContentHeader">
@@ -75,7 +125,7 @@ class Content extends Component{
                         {/* Content 제목 */}
                         {this.props.title}
                     </div>
-                    <div>
+                    <div className={this.props.isSearch?"isSearch":"isNotSearch"}>
                         {/* 날짜 조건 */}
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
@@ -110,7 +160,7 @@ class Content extends Component{
                         </MuiPickersUtilsProvider>
                         <Button
                             variant="contained"
-                            color="secondary"
+                            color="primary"
                             className={"SearchBtn"}
                             startIcon={<SendIcon>send</SendIcon>}
                             onClick = {this.onClickSearch.bind(this)}
@@ -121,19 +171,16 @@ class Content extends Component{
                 </div>
                 <div className="ContentBody">
                     {/* Content 내용 */}
-                    <ContentTable rowData = {this.state.data}></ContentTable>
+                    <ContentTable 
+                        rowData = {this.state.data} 
+                        isEditable={this.props.isEditable}
+                        insertHandler={this.insertHandler.bind(this)}
+                        deleteHandler={this.deleteHandler.bind(this)}
+                    />
                 </div>
             </div>
         );
     }
 }
-
-// let mapStateToProps = (state) => {
-//     return {
-//         data: state.counter.value
-//     };
-// }
-
-// Content = connect(mapStateToProps)(Content);
 
 export default Content;
