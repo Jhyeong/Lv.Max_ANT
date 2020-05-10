@@ -2,7 +2,7 @@
   "name": "autostock",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080",
+  "proxy": "https://astute-setting-276721.du.r.appspot.com",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
     "@material-ui/core": "^4.9.12",

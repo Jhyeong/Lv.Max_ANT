@@ -40,23 +40,28 @@ class ContentTable extends Component{
         "percent" : ["PERCENT", "TOTAL_PERCENT"],
         "naverLink" : ["STOCK_CODE"]
       },
-      editMode : false,
-      insertMode : false,
-      deleteMode : false,
+      insertMode : this.props.insertMode,
+      editMode : this.props.editMode,
+      deleteMode : this.props.deleteMode,
       selectedEditRowIdx : ""
     }
 
     //수정한 데이터를 저장할 json객체
-    this.currentEditData = {};
     this.currentInsertData = {};
+    this.currentUpdateData = {};
   }
 
-  //저장 버튼 클릭
-  onClickSave(data){
-    this.callRestAPI(this.currentEditData);
-    this.setState({
-      editMode : false
-    });
+   //수정 버튼 클릭
+  onClickUpdate(data, e){
+    if(!this.state.editMode){
+      //현재 값 셋팅
+      this.currentUpdateData = data;
+      
+      this.setState({
+        editMode : true,
+        selectedEditRowIdx : e.currentTarget.id
+      });
+    }
   }
 
   //취소 버튼 클릭
@@ -74,29 +79,6 @@ class ContentTable extends Component{
     }
   }
 
-  //수정 버튼 클릭
-  onClickEdit(data, e){
-    if(!this.state.editMode){
-      this.currentEditData = data;
-      
-      this.setState({
-        editMode : true,
-        selectedEditRowIdx : e.currentTarget.id
-      });
-    }
-  }
-
-  //삭제 버튼 클릭
-  onClickDelete(data, e){
-    if(window.confirm("선택한 데이터를 삭제하시겠습니까?")){
-      this.setState({
-        deleteMode : true
-      });
-  
-      this.props.deleteHandler(data, e);
-    }
-  }
-
   // 추가 버튼 클릭
   onClickInsert(e){
     this.setState({
@@ -105,18 +87,44 @@ class ContentTable extends Component{
   }
 
   //추가 저장시 호출
-  onClickInsertSave(e){
-    this.props.insertHandler(this.currentInsertData, e);
+  async onClickInsertSave(e){
+    await this.props.insertHandler(this.currentInsertData, e);
+
+    if(this.props.isReload){
+      this.setState({
+        insertMode : false
+      });
+    }
+  }
+
+  //수정 저장시 호출
+  async onClickUpdateSave(){
+    await this.props.updateHandler(this.currentUpdateData);
     
-    this.setState({
-      insertMode : false
-    });
+    if(this.props.isReload){
+      this.setState({
+        editMode : false
+      });
+    }
+  }
+
+  //삭제 시 호출
+  async onClickDelete(data, e){
+    if(window.confirm("선택한 데이터를 삭제하시겠습니까?")){
+      await this.props.deleteHandler(data, e);
+
+      if(this.props.isReload){
+        this.setState({
+          insertMode : false
+        });
+      }
+    }
   }
 
   //텍스트 필드 수정 시 호출
   onEditChangeHandler(e){
     const fieldName = e.target.name;
-    this.currentEditData[fieldName] = e.target.value;
+    this.currentUpdateData[fieldName] = e.target.value;
   }
   
   //텍스트 필드 추가 시 호출
@@ -124,32 +132,6 @@ class ContentTable extends Component{
     const fieldName = e.target.name;
     this.currentInsertData[fieldName] = e.target.value;
   }
-
-  // REST API 호출
-  callRestAPI = async (param) => {
-    const path = window.location.pathname;
-    let result = [];
-    switch(path){
-        case "/searched-stock-items":
-            result = await service.getSearchedStockItems(param);
-            break;
-        case "/trade-result-summary" :
-            result = await service.getTradeResultSummary(param);
-            break;
-        case "/trade-result-detail" :
-            result = await service.getTradeResultDetail(param);
-            break;
-        case "/common-code" :
-            result = await service.updateCommonCode(param);
-            break;    
-        default :
-            break;
-    }
-    
-    this.setState({
-        data : result.data
-    });
-};
   
   render(){
     // 데이터가 없는 경우
@@ -218,7 +200,7 @@ class ContentTable extends Component{
                                 if(this.state.editMode == true && rowIdx == this.state.selectedEditRowIdx){
                                   return (
                                     <TableCell>
-                                      <IconButton color="secondary" id={rowIdx} name={"save"+rowIdx} onClick={() => this.onClickSave(data)}>
+                                      <IconButton color="secondary" id={rowIdx} name={"save"+rowIdx} onClick={() => this.onClickUpdateSave(data)}>
                                         {/* 저장 */}
                                         <SaveIcon/>
                                       </IconButton>
@@ -231,7 +213,7 @@ class ContentTable extends Component{
                                 }else{
                                   return (
                                     <TableCell>
-                                      <IconButton color="secondary" id={rowIdx} name={"edit"+rowIdx} onClick={this.onClickEdit.bind(this, data)}>
+                                      <IconButton color="secondary" id={rowIdx} name={"edit"+rowIdx} onClick={this.onClickUpdate.bind(this, data)}>
                                         {/* 수정 */}
                                         <EditIcon/>
                                       </IconButton>
@@ -265,7 +247,7 @@ class ContentTable extends Component{
                                   let classValue = "";
                                   // 퍼센트 포맷
                                   // 양수는 빨간색, 음수는 파란색
-                                  if(parseInt(data[column]) >= 0){
+                                  if(parseFloat(data[column]) >= 0){
                                     classValue = "plus"; 
                                   }else{
                                     classValue = "minus";

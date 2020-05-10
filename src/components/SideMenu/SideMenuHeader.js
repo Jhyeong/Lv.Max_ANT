@@ -7,6 +7,7 @@ const SideMenuHeader = () => (
         <div className="SideMenuHeader">
             <div className="logoWrapper">
                 <img src="styles/images/logo.png" className="logo"/>
+                <div>만렙개미</div>
             </div>
         </div>
     </Link>

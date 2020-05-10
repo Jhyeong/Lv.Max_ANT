@@ -19,7 +19,8 @@ class Content extends Component{
         this.state = {
             data : [],
             startDate : dateUtil.format(dateUtil.addDays(new Date(), -7), "yyyy-MM-dd"),
-            endDate : dateUtil.format(new Date(), "yyyy-MM-dd")
+            endDate : dateUtil.format(new Date(), "yyyy-MM-dd"),
+            isReload : false
         }
 
         // 초기 조회
@@ -93,6 +94,33 @@ class Content extends Component{
             alert("추가가 완료되었습니다.");
         }
 
+        this.setState({
+            isReload : true
+        });
+        this.initData();
+    }
+
+    // 수정버튼 클릭 시 호출
+    async updateHandler(data, e){
+        let response;
+        const path = window.location.pathname;
+        switch(path){
+            case "/common-code" :
+                response = await service.updateCommonCode(data);
+                break;    
+            default :
+                break;
+        }
+
+        if(response.data == 0){
+            alert("수정 중 에러가 발생했습니다.");
+        }else{
+            alert("수정이 완료되었습니다.");
+        }
+
+        this.setState({
+            isReload : true
+        });
         this.initData();
     }
 
@@ -114,6 +142,9 @@ class Content extends Component{
             alert("삭제가 완료되었습니다.");
         }
 
+        this.setState({
+            isReload : true
+        });
         this.initData();
     }
 
@@ -175,7 +206,12 @@ class Content extends Component{
                         rowData = {this.state.data} 
                         isEditable={this.props.isEditable}
                         insertHandler={this.insertHandler.bind(this)}
+                        updateHandler={this.updateHandler.bind(this)}
                         deleteHandler={this.deleteHandler.bind(this)}
+                        insertMode = {false}
+                        editMode = {false}
+                        deleteMode = {false}
+                        isReload = {this.state.isReload}
                     />
                 </div>
             </div>
