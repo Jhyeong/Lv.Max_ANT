@@ -55,16 +55,16 @@ class Content extends Component{
         };
         let result = [];
         switch(path){
-            case "/searched-stock-items":
+            case "/lv-mx-report/searched-stock-items":
                 result = await service.getSearchedStockItems(param);
                 break;
-            case "/trade-result-summary" :
+            case "/lv-mx-report/trade-result-summary" :
                 result = await service.getTradeResultSummary(param);
                 break;
-            case "/trade-result-detail" :
+            case "/lv-mx-report/trade-result-detail" :
                 result = await service.getTradeResultDetail(param);
                 break;
-            case "/common-code" :
+            case "/lv-mx-report/common-code" :
                 result = await service.getCommonCode(param);
                 break;    
             default :
@@ -81,7 +81,7 @@ class Content extends Component{
         let response;
         const path = window.location.pathname;
         switch(path){
-            case "/common-code" :
+            case "/lv-mx-report/common-code" :
                 response = await service.insertCommonCode(data);
                 break;    
             default :
@@ -105,7 +105,7 @@ class Content extends Component{
         let response;
         const path = window.location.pathname;
         switch(path){
-            case "/common-code" :
+            case "/lv-mx-report/common-code" :
                 response = await service.updateCommonCode(data);
                 break;    
             default :
@@ -129,7 +129,7 @@ class Content extends Component{
         let response;
         const currentMenu = window.location.pathname;
         switch(currentMenu){
-            case "/common-code" : 
+            case "/lv-mx-report/common-code" : 
                 response = await service.deleteCommonCode(data);
                 break;
             default :

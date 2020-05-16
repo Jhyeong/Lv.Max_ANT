@@ -24,16 +24,16 @@ class ContentTable extends Component{
     super(props);
     this.state = {
       headers : {
-        "/searched-stock-items" : ["종목코드", "종목명", "검색일", "현재가", "전일대비", "등락률"],
-        "/trade-result-detail"  : ["종목코드", "종목명", "체결일자", "주문구분", "체결수량", "체결단가"],
-        "/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"],
-        "/common-code"          : ["EDIT", "NO", "영문코드명", "한글코드명", "코드 값", "설명"]
+        "/lv-mx-report/searched-stock-items" : ["종목코드", "종목명", "검색일", "현재가", "전일대비", "등락률"],
+        "/lv-mx-report/trade-result-detail"  : ["종목코드", "종목명", "체결일자", "주문구분", "체결수량", "체결단가"],
+        "/lv-mx-report/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"],
+        "/lv-mx-report/common-code"          : ["EDIT", "NO", "영문코드명", "한글코드명", "코드 값", "설명"]
       },
       columns : {
-        "/searched-stock-items"  : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "CURRENT_PRICE", "COMPARE_YSTDAY", "PERCENT"],
-        "/trade-result-summary"  : ["SEARCH_DATE", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_PERCENT", "TOTAL_DEPOSIT"],
-        "/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"],
-        "/common-code"           : ["EDIT", "NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"]
+        "/lv-mx-report/searched-stock-items"  : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "CURRENT_PRICE", "COMPARE_YSTDAY", "PERCENT"],
+        "/lv-mx-report/trade-result-summary"  : ["SEARCH_DATE", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_PERCENT", "TOTAL_DEPOSIT"],
+        "/lv-mx-report/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"],
+        "/lv-mx-report/common-code"           : ["EDIT", "NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"]
       },
       columnType : {
         "number"  : ["CURRENT_PRICE", "COMPARE_YSTDAY", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_DEPOSIT", "TRADE_PRICE"],

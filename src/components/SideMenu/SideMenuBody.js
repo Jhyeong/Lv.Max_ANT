@@ -23,10 +23,10 @@ class SideMenuBody extends Component{
     render(){
         return (
             <div className="SideMenuBody">
-                <SideMenuRow path="/searched-stock-items"   id="0" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
-                <SideMenuRow path="/trade-result-summary"   id="1" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
-                <SideMenuRow path="/trade-result-detail"    id="2" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
-                <SideMenuRow path="/common-code"            id="3" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/lv-mx-report/searched-stock-items"   id="0" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/lv-mx-report/trade-result-summary"   id="1" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/lv-mx-report/trade-result-detail"    id="2" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/lv-mx-report/common-code"            id="3" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
             </div>
         );
     }

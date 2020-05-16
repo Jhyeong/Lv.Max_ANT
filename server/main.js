@@ -1,14 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 3001;
+const path = require('path');
 
+app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../build')));
 
-app.get("/", (req, res) => {
-    res.send("test");
+app.get("/lv-mx-report", (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 app.listen(port, () => {
-    console.log("test2");
+    console.log("node server listening...");
 });
