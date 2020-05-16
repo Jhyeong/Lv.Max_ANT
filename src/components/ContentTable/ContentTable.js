@@ -16,24 +16,26 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import * as service from '../../services/RESTAPI';
 
 class ContentTable extends Component{
 
   constructor(props){
     super(props);
+
     this.state = {
       headers : {
         "/lv-mx-report/searched-stock-items" : ["종목코드", "종목명", "검색일", "현재가", "전일대비", "등락률"],
         "/lv-mx-report/trade-result-detail"  : ["종목코드", "종목명", "체결일자", "주문구분", "체결수량", "체결단가"],
         "/lv-mx-report/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"],
-        "/lv-mx-report/common-code"          : ["EDIT", "NO", "영문코드명", "한글코드명", "코드 값", "설명"]
+        "/lv-mx-report/common-code"          : ["NO", "영문코드명", "한글코드명", "코드 값", "설명"],
+        "/lv-mx-report/condition-list"       : ["NO", "조건명", "조건식", "설정일"]
       },
       columns : {
         "/lv-mx-report/searched-stock-items"  : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "CURRENT_PRICE", "COMPARE_YSTDAY", "PERCENT"],
         "/lv-mx-report/trade-result-summary"  : ["SEARCH_DATE", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_PERCENT", "TOTAL_DEPOSIT"],
         "/lv-mx-report/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"],
-        "/lv-mx-report/common-code"           : ["EDIT", "NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"]
+        "/lv-mx-report/common-code"           : ["NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"],
+        "/lv-mx-report/condition-list"        : ["NO", "CONDITION_NAME", "CONDITION_EXPRESSION", "REG_DATE"]
       },
       columnType : {
         "number"  : ["CURRENT_PRICE", "COMPARE_YSTDAY", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_DEPOSIT", "TRADE_PRICE"],
@@ -43,7 +45,12 @@ class ContentTable extends Component{
       insertMode : this.props.insertMode,
       editMode : this.props.editMode,
       deleteMode : this.props.deleteMode,
-      selectedEditRowIdx : ""
+      selectedEditRowIdx : null
+    }
+
+    if(this.props.isEditable){
+      this.state.headers[window.location.pathname].unshift("EDIT");
+      this.state.columns[window.location.pathname].unshift("EDIT");
     }
 
     //수정한 데이터를 저장할 json객체
@@ -59,20 +66,20 @@ class ContentTable extends Component{
       
       this.setState({
         editMode : true,
-        selectedEditRowIdx : e.currentTarget.id
+        selectedEditRowIdx : parseInt(e.currentTarget.id, 10)
       });
     }
   }
 
   //취소 버튼 클릭
   onClickCancel(e){
-    if(this.state.editMode == true){
+    if(this.state.editMode === true){
       this.setState({
         editMode : false,
-        selectedEditRowIdx : ""
+        selectedEditRowIdx : null
       });
     }
-    if(this.state.insertMode == true){
+    if(this.state.insertMode === true){
       this.setState({
         insertMode : false
       });
@@ -135,14 +142,14 @@ class ContentTable extends Component{
   
   render(){
     // 데이터가 없는 경우
-      if(typeof this.props.rowData == "undefined" || this.props.rowData.length == 0){
+      if(typeof this.props.rowData === "undefined" || this.props.rowData.length === 0){
         return(
           <TableContainer component={Paper} className="ContentTableContainer">
               <Table className="ContentTable" aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    {this.state.headers[window.location.pathname].map((data) => {
-                      return <TableCell>{data}</TableCell>
+                    {this.state.headers[window.location.pathname].map((data, idx) => {
+                      return <TableCell key={data + idx}>{data}</TableCell>
                     })}
                   </TableRow>
                 </TableHead>
@@ -184,8 +191,8 @@ class ContentTable extends Component{
                   {/* 테이블 헤더 */}
                   <TableHead>
                     <TableRow>
-                      {this.state.headers[window.location.pathname].map((data) => {
-                        return <TableCell>{data}</TableCell>
+                      {this.state.headers[window.location.pathname].map((data, idx) => {
+                        return <TableCell key={data + idx}>{data}</TableCell>
                       })}
                     </TableRow>
                   </TableHead>
@@ -193,13 +200,13 @@ class ContentTable extends Component{
                   <TableBody>
                       {this.props.rowData.map((data, rowIdx) => {
                         return (
-                          <TableRow>
+                          <TableRow key = {data + rowIdx}>
                             {this.state.columns[window.location.pathname].map((column, idx) => {
                               //수정 버튼 필드 추가
-                              if(this.props.isEditable && column == "EDIT"){
-                                if(this.state.editMode == true && rowIdx == this.state.selectedEditRowIdx){
+                              if(this.props.isEditable && column === "EDIT"){
+                                if(this.state.editMode === true && rowIdx === this.state.selectedEditRowIdx){
                                   return (
-                                    <TableCell>
+                                    <TableCell key={column + idx}>
                                       <IconButton color="secondary" id={rowIdx} name={"save"+rowIdx} onClick={() => this.onClickUpdateSave(data)}>
                                         {/* 저장 */}
                                         <SaveIcon/>
@@ -212,7 +219,7 @@ class ContentTable extends Component{
                                   )
                                 }else{
                                   return (
-                                    <TableCell>
+                                    <TableCell key={column + idx}>
                                       <IconButton color="secondary" id={rowIdx} name={"edit"+rowIdx} onClick={this.onClickUpdate.bind(this, data)}>
                                         {/* 수정 */}
                                         <EditIcon/>
@@ -227,9 +234,9 @@ class ContentTable extends Component{
                               ;}
                                 
                               //수정 모드일 때 TEXT FIELD 출력
-                              if(this.state.editMode == true && rowIdx == this.state.selectedEditRowIdx){
+                              if(this.state.editMode === true && rowIdx === this.state.selectedEditRowIdx){
                                 // NO컬럼은 disabled
-                                if(column == "NO"){
+                                if(column === "NO"){
                                   return (<TableCell>
                                             <TextField disabled id="standard-secondary" label={column} color="secondary" defaultValue={data[column]}/>
                                         </TableCell>)
@@ -242,7 +249,7 @@ class ContentTable extends Component{
                                 //수정 모드가 아닐 때 일반 FIELD 출력
                                 // 숫자 포맷
                                 if(this.state.columnType["number"].indexOf(column) > -1 ){
-                                  return <TableCell><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'원'} /></TableCell>
+                                  return <TableCell key = {column + idx}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'원'} /></TableCell>
                                 }else if(this.state.columnType["percent"].indexOf(column) > -1 ){
                                   let classValue = "";
                                   // 퍼센트 포맷
@@ -252,13 +259,18 @@ class ContentTable extends Component{
                                   }else{
                                     classValue = "minus";
                                   }
-                                  return <TableCell className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'%'} /></TableCell>
+                                  return <TableCell key = {column + idx} className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'%'} /></TableCell>
                                 }else if(this.state.columnType["naverLink"].indexOf(column) > -1 ){
                                   // 네이버 링크
-                                  return <TableCell><a href={"https://finance.naver.com/item/main.nhn?code=" + data[column]} target="_blank">{data[column]}</a></TableCell>
+                                  return <TableCell key = {data + idx}>
+                                          <a href={"https://finance.naver.com/item/main.nhn?code=" + data[column]} 
+                                             target="_blank" 
+                                             rel="noopener noreferrer">
+                                              {data[column]}
+                                          </a></TableCell>
                                 }else{
                                   //그 외 일반 필드
-                                  return <TableCell>{data[column]}</TableCell>
+                                  return <TableCell key = {data + idx}>{data[column]}</TableCell>
                                 }
                               }
                             })}
@@ -269,7 +281,7 @@ class ContentTable extends Component{
                       <TableRow>
                         {this.state.insertMode?
                         this.state.columns[window.location.pathname].map((column, idx) => {
-                          if(column == "EDIT"){
+                          if(column === "EDIT"){
                             return (
                               // 취소 버튼
                               <TableCell>

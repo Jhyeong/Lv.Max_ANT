@@ -6,7 +6,7 @@ const SideMenuHeader = () => (
     <Link to="/">
         <div className="SideMenuHeader">
             <div className="logoWrapper">
-                <img src="/styles/images/logo.png" className="logo"/>
+                <img src="/styles/images/logo.png" className="logo" alt="logo"/>
                 <div>만렙개미</div>
             </div>
         </div>

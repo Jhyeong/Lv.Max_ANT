@@ -18,11 +18,13 @@ class Content extends Component{
         
         this.state = {
             data : [],
-            startDate : dateUtil.format(dateUtil.addDays(new Date(), -7), "yyyy-MM-dd"),
+            startDate : dateUtil.format(dateUtil.addDays(new Date(), -365), "yyyy-MM-dd"),
             endDate : dateUtil.format(new Date(), "yyyy-MM-dd"),
             isReload : false
         }
+    }
 
+    componentDidMount(){
         // 초기 조회
         this.initData();
     }
@@ -47,7 +49,7 @@ class Content extends Component{
     }
     
     // REST API 호출
-    initData = async () => {
+    initData = async (firstCall) => {
         const path = window.location.pathname;
         const param = {
             startDate : this.state.startDate,
@@ -66,13 +68,16 @@ class Content extends Component{
                 break;
             case "/lv-mx-report/common-code" :
                 result = await service.getCommonCode(param);
-                break;    
+                break;
+            case "/lv-mx-report/condition-list" :
+                result = await service.getConditionList(param);
+                break;
             default :
                 break;
         }
         
         this.setState({
-            data : result.data
+            data : result.data?result.data:[]
         });
     };
     
@@ -83,12 +88,15 @@ class Content extends Component{
         switch(path){
             case "/lv-mx-report/common-code" :
                 response = await service.insertCommonCode(data);
+                break;
+            case "/lv-mx-report/condition-list" :
+                response = await service.insertConditionList(data);
                 break;    
             default :
                 break;
         }
 
-        if(response.data == 0){
+        if(response.data === 0){
             alert("추가 중 에러가 발생했습니다.");
         }else{
             alert("추가가 완료되었습니다.");
@@ -107,12 +115,15 @@ class Content extends Component{
         switch(path){
             case "/lv-mx-report/common-code" :
                 response = await service.updateCommonCode(data);
+                break;
+            case "/lv-mx-report/condition-list" :
+                response = await service.updateConditionList(data);
                 break;    
             default :
                 break;
         }
 
-        if(response.data == 0){
+        if(response.data === 0){
             alert("수정 중 에러가 발생했습니다.");
         }else{
             alert("수정이 완료되었습니다.");
@@ -132,11 +143,14 @@ class Content extends Component{
             case "/lv-mx-report/common-code" : 
                 response = await service.deleteCommonCode(data);
                 break;
+            case "/lv-mx-report/condition-list" :
+                response = await service.deleteConditionList(data);
+                break;
             default :
                 break;
         }
 
-        if(response.data == 0){
+        if(response.data === 0){
             alert("삭제 중 에러가 발생했습니다.");
         }else{
             alert("삭제가 완료되었습니다.");
@@ -162,7 +176,7 @@ class Content extends Component{
                             <KeyboardDatePicker
                                 format="yyyy-MM-dd"
                                 margin="normal"
-                                id="date-picker-dialog"
+                                id="date-picker-start"
                                 label="시작일"
                                 value={this.state.startDate}
                                 onChange={this.handleStartDateChange.bind(this)}
@@ -180,7 +194,7 @@ class Content extends Component{
                                 variant="inline"
                                 format="yyyy-MM-dd"
                                 margin="normal"
-                                id="date-picker-dialog"
+                                id="date-picker-end"
                                 label="종료일"
                                 value={this.state.endDate}
                                 onChange={this.handleEndDateChange.bind(this)}

@@ -27,6 +27,7 @@ class SideMenuBody extends Component{
                 <SideMenuRow path="/lv-mx-report/trade-result-summary"   id="1" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
                 <SideMenuRow path="/lv-mx-report/trade-result-detail"    id="2" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
                 <SideMenuRow path="/lv-mx-report/common-code"            id="3" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
+                <SideMenuRow path="/lv-mx-report/condition-list"         id="4" selectedId={this.state.selectedId} onClickHandler={this.handleItemClick}></SideMenuRow>
             </div>
         );
     }

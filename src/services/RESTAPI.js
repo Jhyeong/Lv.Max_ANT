@@ -48,3 +48,25 @@ export function insertCommonCode(param){
 export function deleteCommonCode(param){
     return axios.delete(restServerPath + "/common-code/" + param["NO"], param);
 }
+
+// 조건검색식 리스트 호출
+export function getConditionList(param){
+    return axios.get(restServerPath + "/condition-list", {
+        params : param
+    });
+}
+
+// 조건검색식 리스트 업데이트
+export function updateConditionList(param){
+    return axios.put(restServerPath + "/condition-list/" + param["NO"], param);
+}
+
+// 조건검색식 리스트 신규 추가
+export function insertConditionList(param){
+    return axios.post(restServerPath + "/condition-list", param);
+}
+
+// 조건검색식 리스트 삭제
+export function deleteConditionList(param){
+    return axios.delete(restServerPath + "/condition-list/" + param["NO"], param);
+}
