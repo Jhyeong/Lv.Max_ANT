@@ -38,9 +38,9 @@ class ContentTable extends Component{
         "/lv-mx-report/condition-list"        : ["NO", "CONDITION_NAME", "CONDITION_EXPRESSION", "REG_DATE"]
       },
       columnType : {
+        "stockCode" : ["STOCK_CODE"],
         "number"  : ["CURRENT_PRICE", "COMPARE_YSTDAY", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_DEPOSIT", "TRADE_PRICE"],
-        "percent" : ["PERCENT", "TOTAL_PERCENT"],
-        "naverLink" : ["STOCK_CODE"]
+        "percent" : ["PERCENT", "TOTAL_PERCENT"]
       },
       insertMode : this.props.insertMode,
       editMode : this.props.editMode,
@@ -260,13 +260,13 @@ class ContentTable extends Component{
                                     classValue = "minus";
                                   }
                                   return <TableCell key = {column + idx} className={classValue}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'%'} /></TableCell>
-                                }else if(this.state.columnType["naverLink"].indexOf(column) > -1 ){
+                                }else if(this.state.columnType["stockCode"].indexOf(column) > -1 ){
                                   // 네이버 링크
                                   return <TableCell key = {data + idx}>
-                                          <a href={"https://finance.naver.com/item/main.nhn?code=" + data[column]} 
+                                          <a href={"https://finance.naver.com/item/main.nhn?code=" + data[column].padStart(6, "0")} 
                                              target="_blank" 
                                              rel="noopener noreferrer">
-                                              {data[column]}
+                                              {data[column].padStart(6, "0")}
                                           </a></TableCell>
                                 }else{
                                   //그 외 일반 필드

@@ -2,7 +2,8 @@ import axios from 'axios';
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Content-Type'] ='text/plain';
-const restServerPath = "https://astute-setting-276721.du.r.appspot.com/";
+// const restServerPath = "https://astute-setting-276721.du.r.appspot.com/";
+const restServerPath = "http://localhost:8080/";
 /**
  * REST API 호출 js
  */
