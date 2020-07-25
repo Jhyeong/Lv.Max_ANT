@@ -82,9 +82,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "deploy-local" : "nodemon server/main",
-    "deploy-GAE" : "react-scripts build && gcloud app deploy --quiet --stop-previous-version"
+    "deploy" : "react-scripts build && nodemon server/main"
   },
   "eslintConfig": {
     "extends": "react-app"

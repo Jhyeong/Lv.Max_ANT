@@ -28,18 +28,20 @@ class ContentTable extends Component{
         "/lv-mx-report/trade-result-detail"  : ["종목코드", "종목명", "체결일자", "주문구분", "체결수량", "체결단가"],
         "/lv-mx-report/trade-result-summary" : ["체결일자", "총매수금액", "총매도금액", "총수익", "총수익률", "총 D+2예수금"],
         "/lv-mx-report/common-code"          : ["NO", "영문코드명", "한글코드명", "코드 값", "설명"],
-        "/lv-mx-report/condition-list"       : ["NO", "조건명", "조건식", "설정일"]
+        "/lv-mx-report/condition-list"       : ["NO", "조건명", "총매수가격", "조건검색 시작시간", "보유시간","조건검색 종료시간", "조건검색 사용여부", "설정일"]
       },
       columns : {
         "/lv-mx-report/searched-stock-items"  : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "CURRENT_PRICE", "COMPARE_YSTDAY", "PERCENT"],
         "/lv-mx-report/trade-result-summary"  : ["SEARCH_DATE", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_PERCENT", "TOTAL_DEPOSIT"],
         "/lv-mx-report/trade-result-detail"   : ["STOCK_CODE", "STOCK_NAME", "SEARCH_DATE", "ORDER_TYPE", "TRADE_CNT", "TRADE_PRICE"],
         "/lv-mx-report/common-code"           : ["NO", "CODE_NAME_ENG", "CODE_NAME_KOR", "CODE_VALUE", "COMMENT"],
-        "/lv-mx-report/condition-list"        : ["NO", "CONDITION_NAME", "CONDITION_EXPRESSION", "REG_DATE"]
+        "/lv-mx-report/condition-list"        : ["NO", "CONDITION_NAME", "TOTAL_BUY_PRICE", "CONDITION_START_TIME", "HOLDING_TIME", "CONDITION_END_TIME","USE_YN", "REG_DATE"]
       },
       columnType : {
+        "seq"       : ["NO"],
         "stockCode" : ["STOCK_CODE"],
         "number"  : ["CURRENT_PRICE", "COMPARE_YSTDAY", "TOTAL_BUY_PRICE", "TOTAL_SELL_PRICE", "TOTAL_PROFIT", "TOTAL_DEPOSIT", "TRADE_PRICE"],
+        "hour"    : ["HOLDING_TIME"],
         "percent" : ["PERCENT", "TOTAL_PERCENT"]
       },
       insertMode : this.props.insertMode,
@@ -56,6 +58,23 @@ class ContentTable extends Component{
     //수정한 데이터를 저장할 json객체
     this.currentInsertData = {};
     this.currentUpdateData = {};
+  }
+
+  //데이터 타입 변환(문자 -> 숫자)
+  changeDataType(data){
+    if(!data){
+      return data;
+    }
+
+    for(const key in data){
+        if(this.state.columnType["seq"].indexOf(key) > -1
+            || this.state.columnType["number"].indexOf(key) > -1
+            || this.state.columnType["hour"].indexOf(key) > -1){
+          data[key] = parseInt(data[key], 10);
+        }
+    }
+
+    return data;
   }
 
    //수정 버튼 클릭
@@ -95,6 +114,7 @@ class ContentTable extends Component{
 
   //추가 저장시 호출
   async onClickInsertSave(e){
+    this.currentInsertData = this.changeDataType(this.currentInsertData);
     await this.props.insertHandler(this.currentInsertData, e);
 
     if(this.props.isReload){
@@ -106,6 +126,7 @@ class ContentTable extends Component{
 
   //수정 저장시 호출
   async onClickUpdateSave(){
+    this.currentUpdateData = this.changeDataType(this.currentUpdateData);
     await this.props.updateHandler(this.currentUpdateData);
     
     if(this.props.isReload){
@@ -139,7 +160,7 @@ class ContentTable extends Component{
     const fieldName = e.target.name;
     this.currentInsertData[fieldName] = e.target.value;
   }
-  
+
   render(){
     // 데이터가 없는 경우
       if(typeof this.props.rowData === "undefined" || this.props.rowData.length === 0){
@@ -250,6 +271,8 @@ class ContentTable extends Component{
                                 // 숫자 포맷
                                 if(this.state.columnType["number"].indexOf(column) > -1 ){
                                   return <TableCell key = {column + idx}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'원'} /></TableCell>
+                                }else if(this.state.columnType["hour"].indexOf(column) > -1 ){
+                                  return <TableCell key = {column + idx}><NumberFormat value={data[column]} displayType={'text'} thousandSeparator={true} suffix={'분'} /></TableCell>
                                 }else if(this.state.columnType["percent"].indexOf(column) > -1 ){
                                   let classValue = "";
                                   // 퍼센트 포맷
